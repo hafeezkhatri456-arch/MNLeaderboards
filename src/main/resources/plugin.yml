@@ -1,0 +1,19 @@
+name: MNLeaderboards
+version: '1.1.0'
+main: me.mn.leaderboards.MNLeaderboards
+api-version: '1.21.11'
+description: Animated leaderboards with typing titles, sliding rows, rotation and private previews.
+author: MN
+softdepend: [PlaceholderAPI]
+
+commands:
+  mnlb:
+    description: Manage MNLeaderboards
+    usage: /<command> help
+    aliases: [lb]
+    permission: mnlb.admin
+
+permissions:
+  mnlb.admin:
+    description: Access to all MNLeaderboards commands
+    default: op

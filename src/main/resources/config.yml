@@ -1,0 +1,236 @@
+# ───────────────────────────────────────────────────────────────
+#  MNLeaderboards  -  Paper 1.21.11
+#  Commands: /mnlb  (alias /lb)      Permission: mnlb.admin
+# ───────────────────────────────────────────────────────────────
+
+settings:
+  # Players closer than this (blocks) see the board. Nobody nearby = nothing is spawned.
+  view-distance: 40
+  # How many rows each board shows.
+  positions: 10
+  # Scores are re-read from the server every N seconds (done in small batches, no lag).
+  refresh-seconds: 60
+  # Ignore players who have not joined for N days (0 = never ignore). Helps big servers.
+  ignore-inactive-days: 0
+  # Players processed per tick while refreshing.
+  batch-size: 25
+
+  # ── Layout ──
+  row-spacing: 0.30        # blocks between rows
+  row-width: 150           # row width in Minecraft font pixels (name ....... value)
+  icon-width: 9            # pixel width of a player head / sprite. Tune if your column is ragged.
+  heads: true              # show the player's head before the name (needs 1.21.9+ clients)
+  text-scale: 1.0
+
+  # ── Animation ──
+  typing-ticks-per-char: 1 # title typing speed
+  row-delay-ticks: 3       # delay between each row starting its slide-in
+  shimmer: true            # animated gold gradient on the #1 name
+  you-line: true           # your own "#75 Name .... value" line under the rows, only you see it
+  title-scale: 2.0         # size of the big title
+  circled-ranks: true      # ① ② ③ ... instead of #1 #2 #3
+  value-icons: true        # show the board icon after every value
+  dots: false              # little dots under the title showing which board is active
+  panel:
+    enabled: false         # true = dark backdrop behind the board
+    material: BLACK_CONCRETE
+    glow: true             # coloured outline around the backdrop (only when enabled)
+
+  # ── Sounds ──  (key, volume, pitch)
+  sounds:
+    typing:
+      enabled: true
+      key: "minecraft:block.note_block.hat"
+      volume: 0.35
+      pitch: 1.7
+    row:
+      enabled: true
+      key: "minecraft:block.note_block.bit"
+      volume: 0.45
+      pitch-start: 0.8     # pitch rises with every row
+      pitch-step: 0.07
+
+# ───────────────────────────────────────────────────────────────
+#  BOARDS
+#   source:  statistic | custom | placeholder
+#   colors:  1 colour or a list (gradient)  e.g. ["#ff512f", "#f09819"]
+#   format:  number (1.2K) | full (1,234) | time (ticks -> 5h 35m) | seconds | distance (cm -> km)
+#   sorting: descending | ascending
+#   icon:    MiniMessage sprite, e.g. <sprite:items:item/diamond_sword>
+#            icon-frames > 0 makes it an animation, use %frame% in the icon path.
+# ───────────────────────────────────────────────────────────────
+boards:
+  kills:
+    source: statistic
+    statistic: PLAYER_KILLS
+    title: "TOP KILLS"
+    colors: ["#ff512f", "#f09819"]
+    value-color: "#FFD263"
+    icon: "<sprite:items:item/diamond_sword>"
+    format: number
+    sorting: descending
+    minimum-value: 1
+    duration-seconds: 12
+
+  mobs:
+    source: statistic
+    statistic: MOB_KILLS
+    title: "TOP MOB KILLS"
+    colors: ["#56ab2f", "#a8e063"]
+    value-color: "#FFD263"
+    icon: "<sprite:items:item/rotten_flesh>"
+    format: number
+    sorting: descending
+    minimum-value: 1
+    duration-seconds: 12
+
+  deaths:
+    source: statistic
+    statistic: DEATHS
+    title: "TOP DEATHS"
+    colors: ["#cb2d3e", "#ef473a"]
+    value-color: "#FFD263"
+    icon: "<sprite:particles:raid_omen>"
+    format: number
+    sorting: descending
+    minimum-value: 1
+    duration-seconds: 12
+
+  playtime:
+    source: statistic
+    statistic: PLAY_ONE_MINUTE     # play time in ticks
+    title: "TOP PLAYTIME"
+    colors: ["#ffe344", "#ffc400"]
+    value-color: "#FFD263"
+    icon: "<sprite:items:item/clock_%frame%>"
+    icon-frames: 64
+    icon-frame-pad: 2
+    icon-frame-ticks: 3
+    format: time
+    sorting: descending
+    minimum-value: 6000            # 5 minutes
+    duration-seconds: 12
+
+  walked:
+    source: statistic
+    statistic: WALK_ONE_CM
+    title: "TOP TRAVELLERS"
+    colors: ["#00c6ff", "#0072ff"]
+    value-color: "#FFD263"
+    icon: "<sprite:items:item/iron_boots>"
+    format: distance
+    sorting: descending
+    minimum-value: 1000
+    duration-seconds: 12
+
+  # ── PlaceholderAPI boards ──
+  # Offline players: if an expansion can't read a player who is offline, the last value seen while they
+  # were online is used (stored in cache.yml). So the board fills up as players log in.
+  coins:
+    source: placeholder
+    placeholder: "%apcoin_balance%"
+    title: "TOP COINS"
+    colors: ["#f6d365", "#fda085"]
+    value-color: "#FFD263"
+    icon: "<sprite:items:item/gold_nugget>"
+    format: number
+    sorting: descending
+    minimum-value: 1
+    duration-seconds: 12
+
+  shards:
+    source: placeholder
+    placeholder: "%eshards_balance%"
+    title: "TOP SHARDS"
+    colors: ["#c13bff", "#7c3aed"]
+    value-color: "#FFD263"
+    icon: "<sprite:items:item/amethyst_shard>"
+    format: number
+    sorting: descending
+    minimum-value: 1
+    duration-seconds: 12
+
+  balance:
+    source: placeholder
+    placeholder: "%vault_eco_balance%"      # CHANGE if your economy uses another placeholder
+    title: "TOP BALANCE"
+    colors: ["#7bf7a6", "#1fd964"]
+    value-color: "#FFD263"
+    icon: "<sprite:items:item/emerald>"
+    format: number
+    sorting: descending
+    minimum-value: 1
+    duration-seconds: 12
+
+  votes:
+    source: placeholder
+    placeholder: "%votingplugin_total_votes%"   # CHANGE to your vote plugin's placeholder
+    title: "TOP VOTES"
+    colors: ["#56ccf2", "#2f80ed"]
+    value-color: "#FFD263"
+    icon: "<sprite:items:item/writable_book>"
+    format: number
+    sorting: descending
+    minimum-value: 1
+    duration-seconds: 12
+
+  killstreak:
+    source: placeholder
+    placeholder: "%killstreak_highest%"         # CHANGE to your killstreak placeholder
+    title: "TOP KILLSTREAK"
+    colors: ["#ff4545", "#d92222"]
+    value-color: "#ff4a4a"
+    icon: "<sprite:items:item/crossbow_standby>"
+    format: number
+    sorting: descending
+    minimum-value: 1
+    duration-seconds: 12
+
+  mined:
+    source: placeholder
+    placeholder: "%statistic_mine_block%"      # needs the PlaceholderAPI "Statistic" expansion (total of all blocks)
+    title: "BLOCKS MINED"
+    colors: ["#bdc3c7", "#2c3e50"]
+    value-color: "#FFD263"
+    icon: "<sprite:items:item/iron_pickaxe>"
+    format: number
+    sorting: descending
+    minimum-value: 1
+    duration-seconds: 12
+
+  placed:
+    source: placeholder
+    placeholder: "%blocksplaced_total%"        # CHANGE: vanilla has no 'blocks placed' stat, your plugin must provide it
+    title: "BLOCKS PLACED"
+    colors: ["#a8e063", "#56ab2f"]
+    value-color: "#FFD263"
+    icon: "<sprite:blocks:block/green_concrete>"
+    format: number
+    sorting: descending
+    minimum-value: 1
+    duration-seconds: 12
+
+  # Custom board - feed it with:  /mnlb set points <player> <value>   or   /mnlb add points <player> <amount>
+  # points:
+  #   source: custom
+  #   title: "TOP POINTS"
+  #   colors: ["#e372ff", "#7c3aed"]
+  #   value-color: "#FFD263"
+  #   icon: "<sprite:items:item/amethyst_shard>"
+  #   format: number
+  #   sorting: descending
+  #   minimum-value: 1
+  #   duration-seconds: 12
+
+  # PlaceholderAPI board (needs PlaceholderAPI + the expansion):
+  # balance:
+  #   source: placeholder
+  #   placeholder: "%vault_eco_balance%"
+  #   title: "TOP BALANCE"
+  #   colors: ["#11998e", "#38ef7d"]
+  #   value-color: "#FFD263"
+  #   icon: "<sprite:items:item/emerald>"
+  #   format: number
+  #   sorting: descending
+  #   minimum-value: 1
+  #   duration-seconds: 12
